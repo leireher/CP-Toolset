@@ -1,0 +1,20 @@
+# File editing
+*.swp
+*#
+[#]*
+*~
+
+# C++ compilation
+*.o
+*.lo
+*.slo
+*.obj
+*.out
+
+# Python
+__pycache__/
+*.pyc
+
+# Testing files
+test*
+
