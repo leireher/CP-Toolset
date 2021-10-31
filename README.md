@@ -4,7 +4,7 @@ This repo aims to collect useful implementations of common algorithms in the
 Competitive Programming domain. This algorithms are collected as a library
 so that they can be easily used during a contest.
 
-*NOTE*: this algorithms should only be used in Competitive Programming, do not 
+__*NOTE*__: these algorithms should only be used in Competitive Programming, do not 
 use them in production as they be full of bad coding practices.
 
 ## Useful Resources
