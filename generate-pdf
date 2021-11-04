@@ -1,0 +1,91 @@
+#!/bin/bash
+
+# Based on http://superuser.com/questions/601198/how-can-i-automatically-convert-all-source-code-files-in-a-folder-recursively
+
+
+tex_file=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+
+cat<<EOF >$tex_file   ## Print the tex file header
+\documentclass[a4paper, 10pt]{article}
+\usepackage[cm]{fullpage}
+\usepackage{anyfontsize}
+\usepackage{listings}
+\usepackage[margin=1 cm, includefoot]{geometry}
+\usepackage[usenames,dvipsnames]{xcolor}  %% Allow color names
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{1,1,1} %% White background
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+\usepackage[colorlinks=true,linkcolor=blue]{hyperref}
+
+\fontsize{8pt}{10pt}
+
+\begin{document}
+\lstset{inputencoding=utf8}
+\lstset{extendedchars=true}
+\newcommand{\ProcessDigit}[1]{\bfseries \color{orange!75!black} #1}
+\lstset{%
+	backgroundcolor=\color{white},
+	basicstyle=\footnotesize\ttfamily,
+	commentstyle=\itshape\color{white!25!black},
+	keywordstyle=\bfseries\color{deepblue},
+	stringstyle=\color{deepgreen},
+	identifierstyle=\color{orange!20!black},
+	numbers=left,
+	numbersep=5pt,
+	numberstyle=\tiny\color{white!50!black},
+	xleftmargin=0.5cm,
+	tabsize=4,
+	breaklines=true,
+	literate=
+	{0}{{{\ProcessDigit{0}}}}1
+	{1}{{{\ProcessDigit{1}}}}1
+	{2}{{{\ProcessDigit{2}}}}1
+	{3}{{{\ProcessDigit{3}}}}1
+	{4}{{{\ProcessDigit{4}}}}1
+	{5}{{{\ProcessDigit{5}}}}1
+	{6}{{{\ProcessDigit{6}}}}1
+	{7}{{{\ProcessDigit{7}}}}1
+	{8}{{{\ProcessDigit{8}}}}1
+	{9}{{{\ProcessDigit{9}}}}1,
+}
+\tableofcontents
+
+\vspace{-1em}
+\section{Oinarrizkoak}
+\vspace{-1em}
+\lstinputlisting[language=C++]{Typedefs.inc}
+
+EOF
+
+prevsection=""
+find . -name "*\.cpp" -o -name "*\.java" -o -name "*\.c" -o -name "*\.txt" | sed 's/^\..//' |
+sed 's/^\..//' |                 ## Change ./foo/bar.src to foo/bar.src
+
+while read i; do   ## Loop through each file
+  filename=$(basename "$i")
+  dirname=$(dirname "$i")
+  extension="${i##*.}"
+  if [[ $filename == "[OLD]"* ]] ; then continue ; fi
+  filename="${filename##*]}"
+  language="text"
+  if [ "$extension" = "c"    ] ; then language="C"    ; fi
+  if [ "$extension" = "cpp"  ] ; then language="C++"  ; fi
+  if [ "$extension" = "java" ] ; then language="Java" ; fi
+  if [ "$prevsection" != "$dirname" ] ; then
+	echo "\section{\fontsize{12}{14}\selectfont $dirname}" >> $tex_file
+	prevsection=$dirname
+  fi
+  echo "\subsection{\fontsize{10}{12}\selectfont $filename}\vspace{-1em}" >> $tex_file
+  echo "\lstinputlisting[language=$language]{$i}\vspace{-1em} \\*" >>$tex_file   ## Include the file in the PDF
+done &&
+echo "\end{document}" >> $tex_file &&
+
+pdflatex $tex_file -output-directory . &&
+pdflatex $tex_file -output-directory . ## This needs to be run twice for the TOC to be generated
+
+mv $tex_file.pdf notebook.pdf
+rm $tex_file.*
+rm $tex_file
