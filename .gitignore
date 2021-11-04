@@ -11,10 +11,28 @@
 *.obj
 *.out
 
+# Java Compilation
+*.class
+*.jar
+
 # Python
 __pycache__/
 *.pyc
 
 # Testing files
 test*
+
+# MacOS Files (Don't do this to yourself)
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows Files (I feel you...)
+ehthumbs.db
+Thumbs.db
+
+# PDF generation
+*.pdf
 
