@@ -5,7 +5,7 @@ Competitive Programming domain. This algorithms are collected as a library
 so that they can be easily used during a contest.
 
 __*NOTE*__: these algorithms should only be used in Competitive Programming, do not 
-use them in production as they be full of bad coding practices.
+use them in production as they may be full of bad coding practices.
 
 ## Useful Resources
 
