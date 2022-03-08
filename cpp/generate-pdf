@@ -8,8 +8,8 @@ tex_file=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
 cat<<EOF >$tex_file   ## Print the tex file header
 \documentclass[a4paper, 10pt]{article}
 \usepackage[cm]{fullpage}
+\usepackage{listingsutf8}
 \usepackage{anyfontsize}
-\usepackage{listings}
 \usepackage[margin=1 cm, includefoot]{geometry}
 \usepackage[usenames,dvipsnames]{xcolor}  %% Allow color names
 \definecolor{codegreen}{rgb}{0,0.6,0}
@@ -23,7 +23,7 @@ cat<<EOF >$tex_file   ## Print the tex file header
 \fontsize{8pt}{10pt}
 
 \begin{document}
-\lstset{inputencoding=utf8}
+\lstset{inputencoding=utf8/latin1}
 \lstset{extendedchars=true}
 \newcommand{\ProcessDigit}[1]{\bfseries \color{orange!75!black} #1}
 \lstset{%
