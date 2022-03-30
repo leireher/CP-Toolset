@@ -21,3 +21,52 @@ hosts Competitive Programming contests. After the contests problem editorials
 are published by problem authors, it is a good way of getting started in 
 Competitive Programming.
 
+## Unofficial ICPC Judge usage
+
+The unofficial judge [icpc_judge.py](icpc_judge.py) can be used to validate solutions
+to problems from past ICPC editions. The folder holding the test cases of the problems
+should have the following structure:
+
+```
+root/
+├── sample/
+|   ├── sample01.in
+|   ├── sample01.ans
+|   ├── ...
+|   ├── sampleN.in
+|   └── sampleN.ans
+├── secret/
+|   ├── test01.in
+|   ├── test01.ans
+|   ├── ...
+|   ├── testN.in
+|   └── testN.ans
+└── problem.yaml (Optional)
+```
+
+The file `problem.yaml` specifies the limits under which the proposed solution should
+run. This unofficial judge only takes into account the time and memory limits. A sample
+`problem.yaml` is the following:
+
+```yaml
+source: Southwestern Europe Regional Contest (SWERC) 2020-2021
+source_url: https://swerc.eu/
+author: Silviu Maniu
+license: cc by-sa
+name: Restaurants
+uuid: L
+limits:
+  validation_time: 3
+  memory: 3072
+```
+
+The `validation_time` field indicates the maximum amount of seconds that the solution
+can take to generate the output (defaults to 1 second), and the `memory` field indicates
+the maximum amount of memory in MiB that the solution can allocate (defaults to 2048 MiB).
+
+The actual judge usage can be seen by running `python3 icpc_judge.py -h`.
+
+__NOTE__: Usually, past ICPC contest problem test cases can be downloaded from they
+corresponding official website. These test cases follow the folder structure explained
+above. [Here](https://swerc.eu/2020/theme/problems/swerc.zip) you can download the full 
+problemset with test cases for the 2020 SWERC edition.
