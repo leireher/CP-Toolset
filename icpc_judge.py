@@ -1,5 +1,11 @@
-import argparse, os, sys, subprocess, re, resource
+import argparse
+import os
+import re
+import resource
+import subprocess
+import sys
 from enum import Enum
+
 
 class STATUS(Enum):
     AC = 0
@@ -10,10 +16,25 @@ class STATUS(Enum):
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Custom judge for past ICPC problems.")
-    parser.add_argument("program", metavar="PROGRAM-PATH", type=str, help="Path to the python program to test.")
-    parser.add_argument("problem", metavar="PROBLEM-PATH", type=str, help="Path to the problem folder.")
-    parser.add_argument("--use-pypy", action="store_true", help="The provided program will be run with pypy3 interpreter.")
-    parser.add_argument("--practice-mode", action="store_true", help="Run the code against every test case, showing status for each of them.")
+    parser.add_argument(
+        "program",
+        metavar="PROGRAM-PATH",
+        type=str,
+        help="Path to the python program to test.",
+    )
+    parser.add_argument(
+        "problem", metavar="PROBLEM-PATH", type=str, help="Path to the problem folder."
+    )
+    parser.add_argument(
+        "--use-pypy",
+        action="store_true",
+        help="The provided program will be run with pypy3 interpreter.",
+    )
+    parser.add_argument(
+        "--practice-mode",
+        action="store_true",
+        help="Run the code against every test case, showing status for each of them.",
+    )
     return parser.parse_args()
 
 
@@ -26,17 +47,26 @@ def locate_pypy():
         except FileNotFoundError:
             continue
 
-    raise RuntimeError(f"pypy3 executable cannot be found in $PATH = {os.environ['PATH']}")
+    raise RuntimeError(
+        f"pypy3 executable cannot be found in $PATH = {os.environ['PATH']}"
+    )
+
 
 def load_problem_config(problem_path):
+    # Default time 1 secs, default heap size 2GiB, taken from:
+    # https://pc2.ecs.csus.edu/cli/Problem_format_1.0.pdf
+    config = {"time": 1, "memory": 2048}
     config_path = os.path.join(problem_path, "problem.yaml")
+
     if not os.path.exists(config_path):
-        raise RuntimeError(f"Problem config not found: {config_path}")
+        print(
+            f"[WARNING] Problem config not found: {config_path}. Running with default limits."
+        )
+        return config
 
     with open(config_path, "r") as f:
         contents = f.readlines()
 
-    config = {"time": None, "memory": None}
     limits_section = False
     for line in contents:
         if not limits_section and line.startswith("limits"):
@@ -49,7 +79,7 @@ def load_problem_config(problem_path):
         elif limits_section and line.startswith("  memory:"):
             match = re.search("  memory: (\d+)", line)
             config["memory"] = int(match.group(1))
-    
+
     return config
 
 
@@ -74,7 +104,7 @@ def set_memory_limits(mem):
     if mem is not None:
         max_mem = mem * 1024 * 1024
         resource.setrlimit(resource.RLIMIT_AS, (max_mem, max_mem))
-    
+
 
 def validate_answer(output, answer_file, save_output=True):
     if save_output:
@@ -104,7 +134,7 @@ def execute(cmd, input_file, config):
             timeout=config["time"],
             preexec_fn=lambda: set_memory_limits(config["memory"]),
         )
-        
+
         if proc.returncode != 0:
             return STATUS.RTE
 
@@ -121,4 +151,6 @@ if __name__ == "__main__":
     if args.use_pypy:
         python_interpreter = locate_pypy()
 
-    exec_runner(python_interpreter, args.program, args.problem, practice_mode=args.practice_mode)
+    exec_runner(
+        python_interpreter, args.program, args.problem, practice_mode=args.practice_mode
+    )
