@@ -6,7 +6,7 @@ from collections import deque
 # If not, dist[i] = distance from source node s to node i.
 # Worst-case complexity: O(VE), in practice better than Bellman-Ford, but not than Dijkstra.
 def SPFA(AL,V,s):
-    INF = int(1e9)
+    INF = float("inf")
 
     # SPFA from source S
     # initially, only source vertex s has dist[s] = 0 and in the queue

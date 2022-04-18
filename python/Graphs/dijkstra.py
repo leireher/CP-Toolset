@@ -3,7 +3,7 @@ from heapq import heappush, heappop
 # AL -> Adjacency list
 # COMPLEXITY: O((V+E)log V) (V,E < 300K)
 def dijkstra(AL,V,s):
-    INF = int(1e9)
+    INF = float("inf")
 
     # (Modified) Dijkstra's routine
     dist = [INF for u in range(V)]
