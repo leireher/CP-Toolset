@@ -10,7 +10,7 @@ cat<<EOF >$tex_file   ## Print the tex file header
 \usepackage[cm]{fullpage}
 \usepackage{listingsutf8}
 \usepackage{anyfontsize}
-\usepackage[margin=1 cm, includefoot]{geometry}
+\usepackage[margin=1cm,landscape,twocolumn]{geometry}
 \usepackage[usenames,dvipsnames]{xcolor}  %% Allow color names
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
@@ -19,6 +19,19 @@ cat<<EOF >$tex_file   ## Print the tex file header
 \definecolor{deepblue}{rgb}{0,0,0.5}
 \definecolor{deepgreen}{rgb}{0,0.5,0}
 \usepackage[colorlinks=true,linkcolor=blue]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{University of the Basque Country - Team TrikiTriXa}
+\rhead{Page \thepage}
+\setlength{\headheight}{12pt}
+\setlength{\headsep}{0.1in}
+\setlength{\columnseprule}{0.4pt}
+\setlength{\columnsep}{0.5cm}
 
 \fontsize{8pt}{10pt}
 
@@ -78,11 +91,17 @@ while read i; do   ## Loop through each file
   echo "\subsection{\fontsize{10}{12}\selectfont $filename}\vspace{-1em}" >> $tex_file
   echo "\lstinputlisting[language=$language]{$i}\vspace{-1em} \\*" >>$tex_file   ## Include the file in the PDF
 done &&
+echo "\input{notebook/extra.tex}" >> $tex_file &&
 echo "\end{document}" >> $tex_file &&
 
 pdflatex $tex_file -output-directory . &&
 pdflatex $tex_file -output-directory . ## This needs to be run twice for the TOC to be generated
 
-mv $tex_file.pdf notebook.pdf
+mv $tex_file.pdf pre-notebook.pdf
 rm $tex_file.*
 rm $tex_file
+
+pdflatex notebook/cheat.tex -output-directory .
+rm cheat.log cheat.out cheat.aux
+pdfunite pre-notebook.pdf cheat.pdf notebook.pdf
+rm cheat.pdf pre-notebook.pdf

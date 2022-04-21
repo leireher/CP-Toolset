@@ -33,9 +33,6 @@ test*
 ehthumbs.db
 Thumbs.db
 
-# PDF generation
-*.pdf
-
 # JetBrains files
 .idea/
 
