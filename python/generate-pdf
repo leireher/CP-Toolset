@@ -29,7 +29,7 @@ cat<<EOF >$tex_file   ## Print the tex file header
 
 \pagestyle{fancy}
 \fancyhf{}
-\lhead{University of the Basque Country - Team TrikiTriXa}
+\lhead{University of the Basque Country - Team EHUphoria}
 \rhead{Page \thepage}
 \setlength{\headheight}{12pt}
 \setlength{\headsep}{0.1in}
